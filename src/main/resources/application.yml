@@ -17,4 +17,4 @@ pagehelper:
 # 配置当前环境
 spring:
   profiles:
-    active: prod
+    active: dev
