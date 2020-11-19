@@ -1,0 +1,20 @@
+#-------主配置文件-------#
+
+# mybatis配置
+mybatis:
+  # mapper.xml文件路径
+  mapper-locations: classpath:/mappers/*.xml
+  # 扫描需要别名的实体类包
+  type-aliases-package: com.zwx.domain
+  configuration:
+    # 下划线转驼峰命名
+    map-underscore-to-camel-case: true
+
+# pageHelper分页插件配置
+pagehelper:
+  helper-dialect: mysql
+
+# 配置当前环境
+spring:
+  profiles:
+    active: prod

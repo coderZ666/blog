@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace=绑定一个对应的Dao/Mapper接口
+    namespace命名空间表示绑定的接口全限定类名
+-->
+<mapper namespace="com.zwx.dao.MessageDao">
+
+    <!--
+        select查询语句
+        1.id对应UserDao中的方法名
+        2.resultType对应返回结果类型，值为给类型全限定类名
+    -->
+    <!--
+        实现查询所有留言，按父子评论关系封装
+        1.首先查询所有父评论，即 parentId = -1 的评论
+        2.再根据父评论自己的id，查询所有子评论,即parentId=#{id}，封装进子评论集合属性comments
+    -->
+    <select id="listMessage" resultMap="Message">
+        select * from message where parentId=-1 order by creatTime desc
+    </select>
+    <resultMap id="Message" type="Message">
+        <result property="id" column="id"/>
+        <collection property="comments" column="id" javaType="list" ofType="Comment" select="listChildren"/>
+    </resultMap>
+    <!--查评论第二步：根据父评论id查询子评论集合-->
+    <select id="listChildren" resultType="Comment">
+        select * from message where parentId=#{id} order by creatTime
+    </select>
+
+    <!--新增一条留言-->
+    <insert id="saveMessage">
+        insert into message (parentId, role, nickname, parentNickname, email, headUrl, content, sensitiveWord)
+        VALUES (#{parentId},#{role},#{nickname},#{parentNickname},#{email},#{headUrl},#{content},#{sensitiveWord})
+    </insert>
+
+    <!--查询留言数量-->
+    <select id="countMessage" resultType="java.lang.Integer">
+        select count(*) from message
+    </select>
+
+    <!--根据评论id删除评论-->
+    <delete id="deleteMessageById">
+        delete from message where id=#{id}
+    </delete>
+
+    <!--根据父评论删除评论-->
+    <delete id="deleteMessageByParentId">
+        delete from message where parentId=#{id}
+    </delete>
+
+    <!--查询留言功能是否开启-->
+    <select id="messageOpen" resultType="Integer">
+        select openOrNot from messagestatus
+    </select>
+
+    <!--查询所有含敏感词的留言-->
+    <select id="listSensitiveMessage" resultType="Message">
+        SELECT * FROM message WHERE sensitiveWord IS NOT NULL order by creatTime desc
+    </select>
+
+    <!--
+        删除所有含敏感词的留言的子留言
+            同一张表中，先从这个表查出含敏感词的留言的id，
+            当做条件删除父id等于id的子留言是不被允许的，
+            除非查出的结果作为派生表再被查一次，派生表必须指定一个别名
+    -->
+    <delete id="deleteSensitiveMessageChildren">
+        DELETE FROM message WHERE parentId IN (SELECT sId FROM (SELECT id AS sId FROM message WHERE sensitiveWord IS NOT NULL)AS a)
+    </delete>
+
+    <!--删除所有含敏感词的留言-->
+    <delete id="deleteSensitiveMessage">
+        DELETE FROM message WHERE sensitiveWord IS NOT NULL
+    </delete>
+
+    <!--开启留言功能-->
+    <update id="openMessage">
+        update messagestatus set openOrNot=0
+    </update>
+
+    <!--关闭留言功能-->
+    <update id="closeMessage">
+        update messagestatus set openOrNot=1
+    </update>
+
+    <!--修改含敏感词的留言-->
+    <update id="updateSensitiveMessage">
+        update message set nickname=#{nickname},content=#{content},sensitiveWord=null where id=#{id}
+    </update>
+
+    <!--根据id查询一条留言-->
+    <select id="getMessageById" resultType="Message">
+        select * from message where id=#{id}
+    </select>
+
+</mapper>

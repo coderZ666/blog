@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace=绑定一个对应的Dao/Mapper接口
+    namespace命名空间表示绑定的接口全限定类名
+-->
+<mapper namespace="com.zwx.dao.CommentDao">
+
+    <!--
+        select查询语句
+        1.id对应UserDao中的方法名
+        2.resultType对应返回结果类型，值为给类型全限定类名
+    -->
+    <!--根据博客id删除所有该博客下的评论-->
+    <delete id="deleteCommentsByBlogId">
+        delete from comment where blogId=#{blogId}
+    </delete>
+
+    <!--
+        实现根据博客id查询所有该博客下的评论
+        1.首先查询所有父评论，即 parentId = -1 的评论
+        2.再根据父评论自己的id，查询所有子评论,即parentId=#{id}，封装进子评论集合属性comments
+    -->
+    <select id="getCommentsByBlogId" resultMap="Comments">
+        select * from comment where blogId=#{blogId} and parentId=-1 and isTop is null order by creatTime
+    </select>
+    <resultMap id="Comments" type="Comment">
+        <result property="id" column="id"/>
+        <collection property="comments" column="id" javaType="list" ofType="Comment" select="listChildren"/>
+    </resultMap>
+    <!--查评论第二步：根据父评论id查询子评论集合-->
+    <select id="listChildren" resultType="Comment">
+        select * from comment where parentId=#{id} order by creatTime
+    </select>
+
+    <!--查询所有的置顶评论，一样使用上述查评论步骤-->
+    <select id="getTopCommentsByBlogId" resultMap="Comments">
+        select * from comment where blogId=#{blogId} and parentId=-1 and isTop is not null order by creatTime
+    </select>
+
+    <!--新增一条评论-->
+    <insert id="saveComment">
+        insert into comment (parentId, role, nickname, parentNickname, email, headUrl, content, sensitiveWord, blogId)
+        VALUES (#{parentId},#{role},#{nickname},#{parentNickname},#{email},#{headUrl},#{content},#{sensitiveWord},#{blog.id})
+    </insert>
+
+    <!--根据博客id查询评论数量-->
+    <select id="countCommentsByBlogId" resultType="java.lang.Integer">
+        select count(0) from comment where blogId=#{blogId}
+    </select>
+
+    <!--根据评论id删除评论-->
+    <delete id="deleteCommentById">
+        delete from comment where id=#{id}
+    </delete>
+
+    <!--根据父评论删除评论-->
+    <delete id="deleteCommentByParentId">
+        delete from comment where parentId=#{id}
+    </delete>
+
+    <!--查询所有含敏感词的评论-->
+    <select id="listSensitiveComment" resultMap="commentBlog">
+        SELECT * FROM comment WHERE sensitiveWord IS NOT NULL order by creatTime desc
+    </select>
+    <resultMap id="commentBlog" type="Comment">
+        <association property="blog" javaType="Blog" column="blogId" select="com.zwx.dao.BlogDao.getBlogById"/>
+    </resultMap>
+
+    <!--
+        删除所有含敏感词的评论的子评论
+            同一张表中，先从这个表查出含敏感词的评论的id，
+            当做条件，删除父id等于id的子留言是不被允许的，
+            除非查出的结果作为派生表再被查一次，派生表必须指定一个别名
+    -->
+    <delete id="deleteSensitiveCommentChildren">
+        DELETE FROM comment WHERE parentId IN (SELECT sId FROM (SELECT id AS sId FROM comment WHERE sensitiveWord IS NOT NULL)AS a)
+    </delete>
+
+    <!--删除所有含敏感词的评论-->
+    <delete id="deleteSensitiveComment">
+        DELETE FROM comment WHERE sensitiveWord IS NOT NULL
+    </delete>
+
+    <!--开启全部博客的评论功能-->
+    <update id="openComment">
+        update blog set commentAble=1 where id!=-1
+    </update>
+
+    <!--关闭所有博客的评论功能-->
+    <update id="closeComment">
+        update blog set commentAble=0 where id!=-1
+    </update>
+
+    <!--修改含敏感词的评论-->
+    <update id="updateSensitiveComment">
+        update comment set nickname=#{nickname},content=#{content},sensitiveWord=null where id=#{id}
+    </update>
+
+    <!--根据id查询一条评论-->
+    <select id="getCommentById" resultType="Comment">
+        select * from comment where id=#{id}
+    </select>
+
+    <!--查询所有未读评论-->
+    <select id="listUnreadComment" resultMap="commentBlog">
+        select * from comment where creatTime > (select lastReadCommentTime from userInfo where id=1) order by creatTime desc
+    </select>
+
+    <!--置顶评论，将isTop设置为true-->
+    <update id="toTopComment">
+        update comment set isTop=true where id=#{id}
+    </update>
+
+    <!--取消置顶评论，将isTop设置为null-->
+    <update id="cancelTopComment">
+        update comment set isTop=null where id=#{id}
+    </update>
+
+</mapper>

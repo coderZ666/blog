@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>coderZ-留言板</title>
+  <link href="../static/images/me.jpg" th:href="@{/images/me.jpg}" rel="icon" type="image/x-ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body class="messageBg">
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(5)" class="gird-header">
+  <div class="ui container">
+    <div class="ui inverted secondary stackable menu">
+      <h2 class="ui olive header item" style="font-family: STSong">coderZ</h2>
+      <!--<div class="right m-item item m-mobile-hide">-->
+        <a href="#" class="m-item item m-mobile-hide "><i class="home icon"></i>首页</a>
+        <a href="#" class="m-item item m-mobile-hide"><i class="clone outline icon"></i>分类</a>
+        <a href="#" class="m-item item m-mobile-hide"><i class="clock icon"></i>时间轴</a>
+        <a href="#" class="m-item item m-mobile-hide"><i class="music icon"></i>音乐盒</a>
+        <a href="#" class="active m-item item m-mobile-hide"><i class="book icon"></i>留言板</a>
+        <a href="#" class="m-item item m-mobile-hide"><i class="pencil alternate icon"></i>友人帐</a>
+        <a href="#" class="m-item item m-mobile-hide"><i class="image icon"></i>照片墙</a>
+        <a href="#" class="m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
+      <!--</div>-->
+      <div class="right m-item item m-mobile-hide">
+        <form name="search" action="#" method="post" target="_blank">
+          <div class="ui icon transparent input m-margin-tb-tiny" style="color: white">
+            <input style="color: white" type="text" name="query" placeholder="Search....">
+            <i onclick="document.forms['search'].submit()" class="search link icon"></i>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+    <i class="sidebar icon"></i>
+  </a>
+</nav>
+
+
+<!--顶部图片-->
+<div class="m-bg-type_outer" style="width: 100%;height: 500px">
+  <!--<img src="../static/images/messagebg.jpg" th:src="@{/images/messagebg.jpg}" alt="" class="ui m-bg image" style="width: 100%;height: 100%">-->
+  <div class="m-bg-class_cover">
+    <div class="ui container" style="position: relative ;top: 140px;">
+      <div class="m-font-size-title m-right-bottom" align="center" style="font-family:'STXingkai'">留言板</div>
+      <div class="m-font-size-text-init-title m-margin-top" align="center">虽然只是短暂的擦身，相遇与分别，尽管如此，我却仍然想珍惜这所有的一切</div>
+
+    </div>
+  </div>
+</div>
+
+
+<!--中间内容-->
+<div id="waypoint" class="m-margin- animated fadeIn">
+    <div class="ui container m-opacity box-shadow-mex">
+        <!--留言区域-->
+        <div class="ui bottom attached segment">
+            <!--留言表单-->
+            <div th:if="${openOrNot}" id="comment-form" class="ui form">
+                <!--评论人身份（游客、博主）-->
+                <input type="hidden" name="role" th:value="${session.user==null ? 0 : 1}">
+                <!--父评论id,这里只纪录一级评论id-->
+                <input type="hidden" name="parentId" value="-1">
+                <!--父评论昵称，纪录具体评论的谁即 @谁-->
+                <input type="hidden" name="parentNickname" value="">
+                <!--测试用游客头像地址-->
+                <!--<input type="hidden" name="headUrl" th:if="${session.user==null}" value="/images/avatar.png">-->
+
+                <div class="ui horizontal divider">输入评论、昵称、邮箱选择头像后发布评论</div>
+                <!--评论信息-->
+                <div class="field">
+                    <textarea name="content" placeholder="请输入评论信息..."></textarea>
+                </div>
+                <!--头像选择：如果是博主不必选择头像-->
+                <div th:if="${session.user==null}">
+                    <h4>选择您的头像</h4>
+                    <div class="fields">
+                        <!--头像1——海绵宝宝-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head1"><a class="avatar"><img class="m-head" th:src="@{/images/head/hmbb.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head1" name="headUrl" value="/images/head/hmbb.jpg" checked/>
+                            </div>
+                        </div>
+                        <!--头像2——派大星-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head2"><a class="avatar"><img class="m-head" th:src="@{/images/head/pdx.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head2" name="headUrl" value="/images/head/pdx.jpg"/>
+                            </div>
+                        </div>
+                        <!--头像3——彭于晏-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head3"><a class="avatar"><img class="m-head" th:src="@{/images/head/pyy1.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head3" name="headUrl" value="/images/head/pyy1.jpg"/>
+                            </div>
+                        </div>
+                        <!--头像4——吴彦祖-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head4"><a class="avatar"><img class="m-head" th:src="@{/images/head/wyz1.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head4" name="headUrl" value="/images/head/wyz1.jpg"/>
+                            </div>
+                        </div>
+                        <!--头像5——刘亦菲-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head5"><a class="avatar"><img class="m-head" th:src="@{/images/head/lyf1.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head5" name="headUrl" value="/images/head/lyf1.jpg"/>
+                            </div>
+                        </div>
+                        <!--头像6——赵丽颖-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head6"><a class="avatar"><img class="m-head" th:src="@{/images/head/zly.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head6" name="headUrl" value="/images/head/zly.jpg"/>
+                            </div>
+                        </div>
+                        <!--头像7——锐雯-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head7"><a class="avatar"><img class="m-head" th:src="@{/images/head/rw.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head7" name="headUrl" value="/images/head/rw.jpg"/>
+                            </div>
+                        </div>
+                        <!--头像8——亚索-->
+                        <div class="field m-margin-right-head center aligned">
+                            <div class="comment">
+                                <label for="head8"><a class="avatar"><img class="m-head" th:src="@{/images/head/ys.jpg}" alt=""></a></label>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" id="head8" name="headUrl" value="/images/head/ys.jpg"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--昵称邮箱发布-->
+                <div class="fields">
+                    <!--昵称输入: 如果是博主不必输入昵称-->
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i th:if="${session.user==null}" class="user icon"></i>
+                            <input th:if="${session.user!=null}" type="hidden" name="nickname" th:value="${session.user.nickName}">
+                            <input th:if="${session.user==null}" type="text" name="nickname" placeholder="昵称">
+                        </div>
+                    </div>
+                    <!--邮箱输入：如果是博主不必输入邮箱-->
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i th:if="${session.user==null}" class="mail icon"></i>
+                            <input th:if="${session.user==null}" type="text" name="email" placeholder="邮箱">
+                            <input th:if="${session.user!=null}" type="hidden" name="email" th:value="${session.user.email}">
+                        </div>
+                    </div>
+                    <!--发布按钮-->
+                    <div class="field  m-margin-bottom-small m-mobile-wide">
+                        <button id="commentpost-btn" type="button" class="ui teal button m-mobile-wide"><i class="edit icon"></i>留言</button>
+                    </div>
+                </div>
+
+            </div>
+            <!--留言展示区域列表-->
+            <div id="comment-container"  class="ui teal segment">
+                <div th:fragment="commentList">
+                    <div class="ui threaded comments" style="max-width: 100%;">
+                        <h3 class="ui dividing header">留言</h3>
+                        <div th:if="${openOrNot}" th:each="fatherComment : ${pageInfo?.list}" class="comment">
+                            <a class="avatar">
+                                <img src="../static/images/avatar.png" th:src="@{${fatherComment.headUrl}}">
+                            </a>
+                            <div class="content">
+                                <a class="author">
+                                    <span style="font-size: 13px;color: #4f5663" th:text="${fatherComment.nickname}">Matt</span>
+                                    <div th:if="${fatherComment.role==0}" class="ui mini basic m-visitor left pointing label m-padded-mini">&nbsp;游客</div>
+                                    <div th:if="${fatherComment.role==1}" class="ui mini basic m-admin left pointing label m-padded-mini">&nbsp;博主</div>
+                                </a>
+                                <div style="font-size: 15px" class="text" th:text="${fatherComment.content}">
+                                    How artistic!
+                                </div>
+                                <span th:if="${session.user!=null}" class="metadata m-margin-lift-null m-padded-bottom-small" style="font-size: 14px" th:text="|仅博主可见：Email——${fatherComment.email}|">邮箱，博主可见</span>
+                                <div class="actions">
+                                    <div class="metadata m-margin-lift-null">
+                                        <span class="date" style="font-size: 14px" th:text="${fatherComment.creatTimeStr}">Today at 5:42PM</span>
+                                    </div>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <a class="reply" th:data-commentid="${fatherComment.id}" th:data-commentnickname="${fatherComment.nickname}" onclick="reply(this)">回复</a>
+                                    <a class="delete" th:href="@{/message/{id}/delete(id=${fatherComment.id},page=${pageInfo.pageNum})}" href="#" onclick="return confirm('确定要删除该评论吗？三思啊! 删了可就没了！')" th:if="${session.user}!=null">删除</a>
+                                </div>
+                            </div>
+                            <!--子评论集-->
+                            <div class="comments" th:if="${#arrays.length(fatherComment.comments)}>0">
+                                <!--子评论-->
+                                <div th:each="childComment : ${fatherComment.comments}" class="comment">
+                                    <a class="avatar">
+                                        <img src="../static/images/avatar.png" th:src="@{${childComment.headUrl}}">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author" >
+                                            <span style="font-size: 13px;color: #4f5663" th:text="${childComment.nickname}">小红</span>
+                                            <div th:if="${childComment.role==0}" class="ui mini basic m-visitor left pointing label m-padded-mini">&nbsp;游客</div>
+                                            <div th:if="${childComment.role==1}" class="ui mini basic m-admin left pointing label m-padded-mini">&nbsp;博主</div>
+                                            <span th:text="|@ ${childComment.parentNickname}|" class="m-teal">@ 小白</span>
+                                        </a>
+                                        <div style="font-size: 15px" class="text" th:text="${childComment.content}">
+                                            How artistic!
+                                        </div>
+                                        <span th:if="${session.user!=null}" class="metadata m-margin-lift-null m-padded-bottom-small" style="font-size: 14px" th:text="|仅博主可见：Email——${childComment.email}|">邮箱，博主可见</span>
+                                        <div class="actions">
+                                            <div class="metadata m-margin-lift-null">
+                                                <span class="date" style="font-size: 14px" th:text="${childComment.creatTimeStr}">Today at 5:42PM</span>
+                                            </div>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <a class="reply" th:data-commentid="${fatherComment.id}" th:data-commentnickname="${childComment.nickname}" onclick="reply(this)">回复</a>
+                                            <a class="delete" th:href="@{/message/{id}/delete(id=${childComment.id},page=${pageInfo.pageNum})}" href="#" onclick="return confirm('确定要删除该评论吗？三思啊! 删了可就没了！')" th:if="${session.user}!=null">删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <!--分页-->
+                        <div th:if="${openOrNot}" class="ui bottom attached segment m-opacity grid">
+                            <div class="five wide column" align="life">
+                                <a class="item" th:href="@{/toMessage(page=${pageInfo.prePage})}" th:unless="${pageInfo.isFirstPage}">上一页</a>
+                            </div>
+
+                            <div class="six wide column" align="center">
+                                <p> <span th:text="${pageInfo.pageNum}"></span> / <span th:text="${pageInfo.pages}"></span> </p>
+                            </div>
+
+                            <div class="five wide column" align="right">
+                                <a class="item" th:href="@{/toMessage(page=${pageInfo.nextPage})}" th:unless="${pageInfo.isLastPage}">下一页</a>
+                            </div>
+                        </div>
+                        <!--不开启留言功能提示-->
+                        <div th:unless="${openOrNot}" class="ui m-margin-tb" align="center"><h3 style="color: #8F938F">博主关闭了留言功能</h3></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<!--底部栏-->
+<footer th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive m-opacity">
+    <!--容器-->
+    <div class="ui center aligned container">
+        <div class="ui inverted divided stackable grid">
+            <div class="four wide column">
+                <div style="font-size: large;font-weight: bold" class="ui inverted m-text-thin m-text-spaced m-margin-top-max" >联系我</div>
+                <div class="ui inverted link list">
+                    <div href="#" class="m-text-thin">Email：coderzwx66@163.com</div>
+                    <div href="#" class="m-text-thin">QQ：752746994</div>
+                </div>
+            </div>
+
+            <div class="four wide column" >
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <!--微信二维码-->
+                        <div style="font-size: large;font-weight: bold" class="ui inverted m-text-thin m-text-spaced " >关注公众号</div>
+                        <img src="../static/images/coderZ.jpg" th:src="@{/images/coderZ.jpg}"  class="ui m-margin-top rounded image" alt="" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="four wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <!--微信二维码-->
+                        <div style="font-size: large;font-weight: bold" class="ui inverted m-text-thin m-text-spaced " >问题交流（QQ群）</div>
+                        <img src="../static/images/QQ-question.jpg" th:src="@{/images/QQ-question.jpg}"  class="ui m-margin-top rounded image" alt="" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+            <!--博客运行时间统计-->
+            <div class="four wide column">
+                <div style="font-size: large;font-weight: bold" class="ui inverted  m-text-thin m-text-spaced m-margin-top">客栈信息</div>
+                <!--<p id="htmer_time" class="item m-text-thin"></p>-->
+                <div id="blog-message">
+                    <div class="ui inverted link list" style="align-content: center;margin-top: 10px">
+                        <div class="m-text-thin" style="text-align: left;margin-left: 75px;">
+                            文章总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2> 篇
+                        </div>
+                        <div class="m-text-thin" style="text-align: left;margin-left: 75px">
+                            访问总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2> 次
+                        </div>
+                        <div class="m-text-thin" style="text-align: left;margin-left: 75px">
+                            评论总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2> 条
+                        </div>
+                        <div class="m-text-thin" style="text-align: left;margin-left: 75px">
+                            留言总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2> 条
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui inverted section divider"></div>
+        <div style="color: #F08047;margin-top: -18px" class="ui inverted m-text-thin m-text-spaced">我的客栈已营业：<span id="htmer_time" class="item m-text-thin"></span> (*๓´╰╯`๓)</div>
+        <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">赣ICP备20004408号-1</a>
+    </div>
+    </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+
+<!--公共JavaScript-->
+<th:block th:replace="_fragments :: script"></th:block>
+
+<script th:inline="javascript">
+    //评论表单验证
+    $('.ui.form').form({
+        fields: {
+            title: {
+                identifier: 'content',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入评论内容'
+                }
+                ]
+            },
+            content: {
+                identifier: 'nickname',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入你的大名'
+                }]
+            },
+            type: {
+                identifier: 'email',
+                rules: [{
+                    type: 'email',
+                    prompt: '请填写正确的邮箱地址'
+                }]
+            }
+        }
+    });
+
+    //验证表单输入后，ajax提交评论
+    $('#commentpost-btn').click(function () {
+        var boo = $('.ui.form').form('validate form');
+        if (boo) {
+            console.log('校验成功');
+            postData();
+        } else {
+            console.log('校验失败');
+        }
+    });
+
+    //ajax提交时调用的方法
+    function postData() {
+        $("#comment-container").load(/*[[@{/message/{page}(page=${pageInfo.pageNum})}]]*/"",{
+            "parentId" : $("[name='parentId']").val(),
+            "role" : $("[name='role']").val(),
+            "nickname": $("[name='nickname']").val(),
+            "parentNickname" : $("[name='parentNickname']").val(),
+            "email"   : $("[name='email']").val(),
+            "headUrl" : $("[name='headUrl']:checked").val(),
+            "content" : $("[name='content']").val()
+        },function (responseTxt, statusTxt, xhr) {
+            // $(window).scrollTo($('#goto'),500);
+            clearContent();
+        });
+    }
+
+    //清空评论表单信息，重置为评论前的样子
+    function clearContent() {
+        $("[name='parentNickname']").val('');
+        $("[name='content']").val('');
+        $("[name='parentId']").val(-1);
+        $("[name='content']").attr("placeholder", "请输入评论信息...");
+    }
+
+
+    //点击回复调用的方法
+    function reply(obj) {
+        var commentId = $(obj).data('commentid');
+        var commentNickname = $(obj).data('commentnickname');
+        $("[name='content']").attr("placeholder", "@"+commentNickname).focus();
+        $("[name='parentId']").val(commentId);
+        $("[name='parentNickname']").val(commentNickname);
+        $(window).scrollTo(300,500);
+    }
+</script>
+
+</body>
+</html>

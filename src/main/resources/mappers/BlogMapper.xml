@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace=绑定一个对应的Dao/Mapper接口
+    namespace命名空间表示绑定的接口全限定类名
+-->
+<mapper namespace="com.zwx.dao.BlogDao">
+
+    <!--
+        select查询语句
+        1.id对应UserDao中的方法名
+        2.resultType对应返回结果类型，值为给类型全限定类名
+    -->
+    <!--根据参数动态查询相应条件下的博客对象集合-->
+    <select id="listBlogByDynParam" parameterType="AdminBlogRequestParam" resultMap="All">
+        select * from blog.blog
+        <where>
+            <if test="title != null and title != '' ">
+                and title like concat('%',#{title},'%')
+            </if>
+            <if test="typeId != null">
+                and typeId=#{typeId}
+            </if>
+            <if test="recommend != null">
+                and recommend=#{recommend}
+            </if>
+        </where>
+        order by updateTime desc
+    </select>
+
+    <!--查询全部博客信息（不含评论）-->
+    <select id="listBlog" resultMap="All">
+        select * from blog order by updateTime desc
+    </select>
+
+    <!--查询全部已发布(不含草稿)博客信息-->
+    <select id="listBlogAll" resultMap="All">
+        select * from blog where status=0 order by updateTime desc
+    </select>
+
+    <!--根据分类id查询所有该分类下已发布的博客-->
+    <select id="listBlogByTypeId" resultMap="All">
+        select * from blog where typeId=#{id} and status=0 order by updateTime desc
+    </select>
+
+    <!--根据标签id查询所有该标签下已发布的博客-->
+    <select id="listBlogByTagId" resultMap="All">
+        select * from blog where id in (select blogId from blogtag where tagId=#{id}) and status=0 order by updateTime desc
+    </select>
+
+    <!--根据id查询博客-->
+    <select id="getBlogById" resultMap="All">
+        select * from blog where id=#{id}
+    </select>
+
+    <!--根据id查询博客-->
+    <select id="getBlogDetailById" resultMap="All">
+        select * from blog where id=#{id}
+    </select>
+
+    <!--搜索查询博客，根据title和content模糊查询-->
+    <select id="listBlogQuery" resultMap="All">
+        select * from blog where title like concat('%',#{query},'%') or content like concat('%',#{query},'%')
+    </select>
+
+    <!--博客所有信息封装的映射结果集(不含评论)-->
+    <resultMap id="All" type="Blog">
+        <result property="id" column="id"/>
+        <association property="userInfo" column="userId" javaType="UserInfo" select="com.zwx.dao.UserDao.getUserById"/>
+        <association property="type" column="typeId" javaType="Type" select="com.zwx.dao.TypeDao.getTypeById"/>
+        <collection property="tags" column="id" javaType="list" ofType="Tag" select="com.zwx.dao.TagDao.getTagsByBlogId"/>
+    </resultMap>
+
+    <!--插入新博客，博客表的操作-->
+    <insert id="saveBlog">
+        insert into blog (title, content, firstPicture, flag, description, music, appreciation,
+                          copyright, commentAble, recommend, status, userId, typeId)
+        values (#{title},#{content},#{firstPicture},#{flag},#{description},#{music},#{appreciation},
+                #{copyright},#{commentAble},#{recommend},#{status},#{userInfo.id},#{type.id})
+    </insert>
+
+    <!--查询博客id，通过博客标题-->
+    <select id="getBlogIdByTitle" resultType="Integer">
+        select id from blog.blog where title=#{title}
+    </select>
+
+    <!--插入新博客，博客标签中间表多对多关系操作-->
+    <insert id="saveBlogManyToMany">
+        insert into blogtag (blogId, tagId) values (#{blogId},#{tagId})
+    </insert>
+
+    <!--更新博客，博客表的操作-->
+    <update id="updateBlog">
+        update blog
+        set title=#{title}, content=#{content},firstPicture=#{firstPicture},
+            flag=#{flag}, description=#{description},music=#{music},appreciation=#{appreciation},
+            copyright=#{copyright},commentAble=#{commentAble}, recommend=#{recommend},
+            status=#{status}, updateTime=#{updateTime}, typeId=#{type.id}
+        where id=#{id}
+    </update>
+
+    <!--根据博客id在博客标签中间表中删除所有该博客的标签信息-->
+    <delete id="deleteBlogManyToMany">
+        delete from blogtag where blogId=#{blogId}
+    </delete>
+
+    <!--根据id删除一条博客-->
+    <delete id="deleteBlogById">
+        delete from blog where id=#{id}
+    </delete>
+
+    <!--查询四条最新推荐博客-->
+    <select id="getRecommend4Blog" resultType="Blog">
+        select id,firstPicture,title from blog.blog where recommend=true and status=0 order by updateTime desc limit 0,4
+    </select>
+
+    <!--查询博客总数-->
+    <select id="getBlogTotal" resultType="Integer">
+        select count(*) from blog.blog
+    </select>
+    <!--查询访问量总数-->
+    <select id="getBlogViewsTotal" resultType="Integer">
+        select sum(views) from blog
+    </select>
+    <!--查询评论总数-->
+    <select id="getBlogCommentTotal" resultType="Integer">
+        select count(*) from comment
+    </select>
+    <!--查询留言总数-->
+    <!--<select id="getBlogMessageTotal" resultType="Integer">
+        select count(*) from myblog.t_message
+    </select>-->
+
+    <!--访问博客的时候调用，浏览量加一-->
+    <update id="viewsAdd1">
+        update blog set views=views+1 where id=#{id}
+    </update>
+
+</mapper>

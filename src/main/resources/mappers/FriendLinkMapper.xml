@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace=绑定一个对应的Dao/Mapper接口
+    namespace命名空间表示绑定的接口全限定类名
+-->
+<mapper namespace="com.zwx.dao.FriendLinkDao">
+
+    <!--
+        select查询语句
+        1.id对应UserDao中的方法名
+        2.resultType对应返回结果类型，值为给类型全限定类名
+    -->
+    <!--查询全部友链-->
+    <select id="listFriendLink" resultType="FriendLink">
+        select * from friendlink order by createTime
+    </select>
+
+    <!--根据友链博客地址，查询有几条数据-->
+    <select id="getFriendLinkCountByAddress" resultType="Integer">
+        select count(*) from friendlink where blogAddress=#{blogAddress}
+    </select>
+
+    <!--新增一个友链-->
+    <insert id="saveFriendLink" parameterType="FriendLink">
+        insert into friendlink (blogName, blogAddress, pictureAddress) values (#{blogName},#{blogAddress},#{pictureAddress})
+    </insert>
+
+    <!--根据id查询一个友链-->
+    <select id="getFriendLinkById" resultType="FriendLink">
+        select * from friendlink where id=#{id}
+    </select>
+
+    <!--修改一个友链-->
+    <update id="updateFriendLink" parameterType="FriendLink">
+        update friendlink
+        set blogName=#{blogName},
+        blogAddress=#{blogAddress},
+        pictureAddress=#{pictureAddress}
+        where id=#{id}
+    </update>
+    
+    <!--删除一个友链-->
+    <delete id="deleteFriendLink">
+        delete from friendlink where id=#{id}
+    </delete>
+
+</mapper>

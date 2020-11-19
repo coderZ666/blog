@@ -1,0 +1,23 @@
+#-------发布后环境-------#
+
+# 端口
+server:
+  port: 80
+
+# 数据源配置
+spring:
+  datasource:
+    type: com.mchange.v2.c3p0.ComboPooledDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: wx.542038!
+
+# 配置日志 显示dao执行的sql语句
+logging:
+  level:
+    root: warn
+    com:
+      zwx: info
+  file:
+    path: log/blog-prod.log

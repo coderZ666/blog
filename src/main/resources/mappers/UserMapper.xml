@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace=绑定一个对应的Dao/Mapper接口
+    namespace命名空间表示绑定的接口全限定类名
+-->
+<mapper namespace="com.zwx.dao.UserDao">
+
+    <!--
+        select查询语句
+        1.id对应UserDao中的方法名
+        2.resultType对应返回结果类型，值为给类型全限定类名
+    -->
+    <!--通过用户名密码，查询一个用户的基础信息（不含博客集合）-->
+    <select id="getUserByUAndP" resultType="UserInfo">
+        select * from userinfo where username=#{username} and password=#{password}
+    </select>
+
+    <!--根据id查询对应用户-->
+    <select id="getUserById" resultType="UserInfo">
+        select * from userinfo where id=#{id}
+    </select>
+
+    <!--更新最后一次阅读评论的时间-->
+    <update id="lastReadCommentTime" parameterType="Date">
+        update userinfo set lastReadCommentTime=#{date}
+    </update>
+
+</mapper>

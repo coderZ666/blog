@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace=绑定一个对应的Dao/Mapper接口
+    namespace命名空间表示绑定的接口全限定类名
+-->
+<mapper namespace="com.zwx.dao.TypeDao">
+
+    <!--
+        select查询语句
+        1.id对应UserDao中的方法名
+        2.resultType对应返回结果类型，值为给类型全限定类名
+    -->
+    <!--查询全部分类-->
+    <select id="listType" resultType="Type">
+        select * from type order by (select count(*) from blog where typeId=type.id and status=0) desc
+    </select>
+
+    <!--新增一个分类-->
+    <insert id="saveType" parameterType="Type">
+        insert into type (name) values (#{name})
+    </insert>
+
+    <!--根据名称查询一个分类-->
+    <select id="getTypeByName" resultType="Type">
+        select * from type where name=#{name}
+    </select>
+
+    <!--根据id查询一个分类-->
+    <select id="getTypeById" resultType="Type">
+        select * from type where id=#{id}
+    </select>
+
+    <!--修改一个类型-->
+    <update id="updateType" parameterType="Type">
+        update type set name=#{name} where id=#{id}
+    </update>
+    
+    <!--删除一个类型-->
+    <delete id="deleteType">
+        delete from type where id=#{id}
+    </delete>
+
+    <!--根据分类id查询该分类下博客的数量-->
+    <select id="getBlogNum" resultType="Integer">
+        select count(*) from blog where typeId=#{typeId} and status=0
+    </select>
+
+</mapper>
