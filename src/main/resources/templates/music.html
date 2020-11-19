@@ -9,9 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
     <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
     <link rel="stylesheet" href="../static/lib/music/css/zplayer.min.css" th:href="@{/lib/music/css/zplayer.min.css}" />
-    <script type="text/javascript" src="../static/lib/music/js/zplayer.min.js" th:src="@{/lib/music/js/zplayer.min.js}"></script>
-    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 
 </head>
 <body class="musicBg">
@@ -58,7 +55,7 @@
 </div>
 
 <!--播放器占位-->
-<div class="ui m-margin-2 m-opacity" align="center">
+<div class="ui m-margin-2 m-opacity" align="center" style="max-width: 100%">
     <div class="ui container box-shadow-max">
         <div id="player2"></div>
     </div>
@@ -70,8 +67,9 @@
 <br>
 <br>
 
-<!--公共JavaScript-->
-<th:block th:replace="_fragments :: script"></th:block>
+<script type="text/javascript" src="../static/lib/music/js/zplayer.min.js" th:src="@{/lib/music/js/zplayer.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 
 <!--雪花效果-->
 <script src="http://www.lmlblog.com/winter/templets/xq/js/snowy.js"></script>
@@ -802,6 +800,7 @@
     })
     zp2.init();
 
+    //手机端隐藏菜单按钮的显示
     $('.menu.toggle').click(function () {
         $('.m-item').toggleClass('m-mobile-hide');
     });
