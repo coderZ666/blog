@@ -72,8 +72,8 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 
 <!--雪花效果-->
-<script src="http://www.lmlblog.com/winter/templets/xq/js/snowy.js"></script>
-<script src="http://www.lmlblog.com/blog/12/js/Snow.js"></script>
+<script th:src="@{/js/snowy.js}" src="http://www.lmlblog.com/winter/templets/xq/js/snowy.js"></script>
+<script th:src="@{/js/Snow.js}" src="http://www.lmlblog.com/blog/12/js/Snow.js"></script>
 <style type="text/css">
     .snow-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100001;}
 </style>
