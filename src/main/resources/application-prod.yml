@@ -2,7 +2,11 @@
 
 # 端口
 server:
-  port: 80
+  port: 443
+  ssl:
+    key-store: classpath:4833046_www.coderzblog.cn.pfx
+    key-store-password: w0oi8sUS
+    key-store-type: PKCS12
 
 # 数据源配置
 spring:
