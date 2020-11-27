@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <!--昵称邮箱发布-->
-                <div class="fields">
+                <div id="goto" class="fields">
                     <!--昵称输入: 如果是博主不必输入昵称-->
                     <div class="field m-mobile-wide m-margin-bottom-small">
                         <div class="ui left icon input">
@@ -231,9 +231,10 @@
                         <br>
                         <br>
                         <!--分页-->
-                        <div th:if="${openOrNot}" class="ui bottom attached segment m-opacity grid">
+                        <div th:if="${openOrNot} and ${pageInfo.pages>1}" class="ui bottom attached segment m-opacity grid">
                             <div class="five wide column" align="life">
-                                <a class="item" th:href="@{/toMessage(page=${pageInfo.prePage})}" th:unless="${pageInfo.isFirstPage}">上一页</a>
+                                <input type="hidden" name="prePage" th:value="${pageInfo.prePage}">
+                                <a href="javascript:;" class="item" onclick="prePage()" th:unless="${pageInfo.isFirstPage}">上一页</a>
                             </div>
 
                             <div class="six wide column" align="center">
@@ -241,7 +242,8 @@
                             </div>
 
                             <div class="five wide column" align="right">
-                                <a class="item" th:href="@{/toMessage(page=${pageInfo.nextPage})}" th:unless="${pageInfo.isLastPage}">下一页</a>
+                                <input type="hidden" name="nextPage" th:value="${pageInfo.nextPage}">
+                                <a href="javascript:;" class="item" onclick="nextPage()" th:unless="${pageInfo.isLastPage}">下一页</a>
                             </div>
                         </div>
                         <!--不开启留言功能提示-->
@@ -383,6 +385,28 @@
             "content" : $("[name='content']").val()
         },function (responseTxt, statusTxt, xhr) {
             // $(window).scrollTo($('#goto'),500);
+            clearContent();
+        });
+    }
+
+    //ajax请求切换到留言上一页
+    function prePage() {
+        console.log("上一页");
+        $("#comment-container").load(/*[[@{/changeMessagePage}]]*/"",{
+            "page" : $("[name='prePage']").val()
+        },function (responseTxt, statusTxt, xhr) {
+            $(window).scrollTo($('#goto'),500);
+            clearContent();
+        });
+    }
+
+    //ajax请求切换到留言下一页
+    function nextPage() {
+        console.log("下一页");
+        $("#comment-container").load(/*[[@{/changeMessagePage}]]*/"",{
+            "page" : $("[name='nextPage']").val()
+        },function (responseTxt, statusTxt, xhr) {
+            $(window).scrollTo($('#goto'),500);
             clearContent();
         });
     }

@@ -149,4 +149,23 @@ public class Comment {
     public Comment() {
     }
 
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", role=" + role +
+                ", isTop=" + isTop +
+                ", nickname='" + nickname + '\'' +
+                ", parentNickname='" + parentNickname + '\'' +
+                ", email='" + email + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", content='" + content + '\'' +
+                ", sensitiveWord='" + sensitiveWord + '\'' +
+                ", creatTime=" + creatTime +
+                ", creatTimeStr='" + creatTimeStr + '\'' +
+                ", blog=" + blog +
+                ", comments=" + comments +
+                '}';
+    }
 }

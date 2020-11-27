@@ -128,4 +128,22 @@ public class Message {
 
     public Message() {
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", role=" + role +
+                ", nickname='" + nickname + '\'' +
+                ", parentNickname='" + parentNickname + '\'' +
+                ", email='" + email + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", content='" + content + '\'' +
+                ", sensitiveWord='" + sensitiveWord + '\'' +
+                ", creatTime=" + creatTime +
+                ", creatTimeStr='" + creatTimeStr + '\'' +
+                ", comments=" + comments +
+                '}';
+    }
 }

@@ -60,6 +60,12 @@ public class MessageController {
         return "message :: commentList";
     }
 
+    //改变留言当前页的请求
+    @PostMapping("/changeMessagePage")
+    public String changeCommentPage(Integer page){
+        return "redirect:/message" + "?page=" + page;
+    }
+
     //发布留言的请求
     @PostMapping("/message/{page}")
     public String saveMessage(@PathVariable Integer page, Message message, HttpSession session){
