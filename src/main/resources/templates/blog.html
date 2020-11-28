@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <!--相同头部信息抽取-->
-<head th:replace="_fragments :: head(~{::title})">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${blog.title}">博客详情</title>
@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="../static/lib/tocbot/tocbot.css" th:href="@{/lib/tocbot/tocbot.css}">
   <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
   <link rel="stylesheet" href="../static/css/timeline.css" th:href="@{/css/timeline.css}">
+  <!--表情插件css-->
+  <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/emojione/2.1.1/assets/sprites/emojione.sprites.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/emojionearea-2.1.3.min.css}" href="../static/css/emojionearea-2.1.3.min.css">
 </head>
 
 <body class="blogBg">
@@ -550,7 +553,7 @@
                   <div class="ui mini basic m-top left label m-padded-mini">&nbsp;置顶</div>
                   <div class="m-zan"><span>博主觉得很赞</span></div>
                 </a>
-                <div style="font-size: 15px" class="text" th:text="${fatherComment.content}">
+                <div style="font-size: 15px" class="text commentEmoji" th:text="${fatherComment.content}">
                   How artistic!
                 </div>
                 <span th:if="${session.user!=null}" class="metadata m-margin-lift-null m-padded-bottom-small" style="font-size: 14px" th:text="|仅博主可见：Email——${fatherComment.email}|">邮箱，博主可见</span>
@@ -579,7 +582,7 @@
                       <div th:if="${childComment.role==1}" class="ui mini basic m-admin left pointing label m-padded-mini">&nbsp;博主</div>
                       <span th:text="|@ ${childComment.parentNickname}|" class="m-teal">@ 小白</span>
                     </a>
-                    <div style="font-size: 15px" class="text" th:text="${childComment.content}">
+                    <div style="font-size: 15px" class="text commentEmoji" th:text="${childComment.content}">
                       How artistic!
                     </div>
                     <span th:if="${session.user!=null}" class="metadata m-margin-lift-null m-padded-bottom-small" style="font-size: 14px" th:text="|仅博主可见：Email——${childComment.email}|">邮箱，博主可见</span>
@@ -606,7 +609,7 @@
                   <div th:if="${fatherComment.role==0}" class="ui mini basic m-visitor left pointing label m-padded-mini">&nbsp;游客</div>
                   <div th:if="${fatherComment.role==1}" class="ui mini basic m-admin left pointing label m-padded-mini">&nbsp;博主</div>
                 </a>
-                <div style="font-size: 15px" class="text" th:text="${fatherComment.content}">
+                <div style="font-size: 15px" class="text commentEmoji" th:text="${fatherComment.content}">
                   How artistic!
                 </div>
                 <span th:if="${session.user!=null}" class="metadata m-margin-lift-null m-padded-bottom-small" style="font-size: 14px" th:text="|仅博主可见：Email——${fatherComment.email}|">邮箱，博主可见</span>
@@ -634,7 +637,7 @@
                       <div th:if="${childComment.role==1}" class="ui mini basic m-admin left pointing label m-padded-mini">&nbsp;博主</div>
                       <span th:text="|@ ${childComment.parentNickname}|" class="m-teal">@ 小白</span>
                     </a>
-                    <div style="font-size: 15px" class="text" th:text="${childComment.content}">
+                    <div style="font-size: 15px" class="text commentEmoji" th:text="${childComment.content}">
                       How artistic!
                     </div>
                     <span th:if="${session.user!=null}" class="metadata m-margin-lift-null m-padded-bottom-small" style="font-size: 14px" th:text="|仅博主可见：Email——${childComment.email}|">邮箱，博主可见</span>
@@ -692,7 +695,7 @@
         <br>
         <!--评论信息-->
         <div class="field">
-          <textarea name="content" placeholder="请输入评论信息..."></textarea>
+          <textarea id="id_comment" name="content" placeholder="请输入评论信息..."></textarea>
         </div>
         <!--头像选择：如果是博主不必选择头像-->
         <div th:if="${session.user==null}">
@@ -885,8 +888,15 @@
 </footer>
 
 
+<script type="text/javascript" th:src="@{/js/jquery-1.11.3.min.js}" src="js/jquery-1.11.3.min.js"></script>
+
 <!--公共JavaScript-->
 <th:block th:replace="_fragments :: script"></th:block>
+
+
+<!--表情插件js-->
+<script type="text/javascript" src="http://cdn.bootcss.com/emojione/2.1.1/lib/js/emojione.min.js"></script>
+<script type="text/javascript" th:src="@{/js/emojionearea.js}" src="../static/js/emojionearea.js"></script>
 
 
 <!--功能script（各页面不同的部分）-->
@@ -1009,6 +1019,7 @@
     },function (responseTxt, statusTxt, xhr) {
       $(window).scrollTo($('#goto'),500);
       clearContent();
+      toEmoji();
     });
   }
 
@@ -1021,6 +1032,7 @@
     },function (responseTxt, statusTxt, xhr) {
       $(window).scrollTo($('#goto'),500);
       clearContent();
+      toEmoji();
     });
   }
 
@@ -1033,6 +1045,7 @@
     },function (responseTxt, statusTxt, xhr) {
       $(window).scrollTo($('#goto'),500);
       clearContent();
+      toEmoji();
     });
   }
 
@@ -1043,6 +1056,8 @@
     $("[name='parentId']").val(-1);
     $("[name='content']").attr("placeholder", "请输入评论信息...");
     $("[name='page']").val(/*[[${pageInfo.pages}]]*/);
+    $("[class='emojionearea-editor']").text('');
+    $("[class='emojionearea-editor']").attr("placeholder", "请输入评论信息...");
   }
 
 
@@ -1052,10 +1067,32 @@
     var commentNickname = $(obj).data('commentnickname');
     var page = $(obj).data('page');
     $("[name='content']").attr("placeholder", "@"+commentNickname).focus();
+    $("[class='emojionearea-editor']").attr("placeholder", "@"+commentNickname).focus();
     $("[name='parentId']").val(commentId);
     $("[name='parentNickname']").val(commentNickname);
     $("[name='page']").val(page);
     $(window).scrollTo($('#comment-form'),500);
+  }
+
+  window.onload=function(){
+    //评论框小表情插件
+    $("#id_comment").emojioneArea();
+
+    //页面初始化的时候对评论内容的emoji转化
+    $(".commentEmoji").each(function(){
+      var value = $(this).text();
+      var code = $('<div/>').text(value).html(); //html转义
+      $(this).html(emojione.toImage(code));
+    });
+  };
+
+  //ajax改变页面之后对评论内容的emoji转化
+  function toEmoji(){
+    $(".commentEmoji").each(function(){
+      var value = $(this).text();
+      var code = $('<div/>').text(value).html(); //html转义
+      $(this).html(emojione.toImage(code));
+    });
   }
 
 </script>

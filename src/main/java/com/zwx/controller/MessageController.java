@@ -67,8 +67,8 @@ public class MessageController {
     }
 
     //发布留言的请求
-    @PostMapping("/message/{page}")
-    public String saveMessage(@PathVariable Integer page, Message message, HttpSession session){
+    @PostMapping("/message")
+    public String saveMessage(Integer page, Message message, HttpSession session){
         if (message.getHeadUrl()==null){//如果后台没有传来头像信息，说明是管理员留言，拿到session中博主头像地址赋值
             UserInfo user = (UserInfo) session.getAttribute("user");
             message.setHeadUrl(user.getHeadUrl());

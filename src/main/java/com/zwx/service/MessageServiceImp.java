@@ -28,6 +28,7 @@ public class MessageServiceImp implements MessageService {
 
     @Override
     public void saveMessage(Message message) {
+        System.out.println(message.getContent());
         SensitiveWord sw = (SensitiveWord) BeanUtils.getBean("sensitive");
         //昵称过滤
         message.setNickname(sw.filterInfo(message.getNickname()));
