@@ -1,3 +1,4 @@
+/*各页面背景图片*/
 body{
     background-image: url("../images/bg/bg1.jpg");
     background-attachment:fixed;
@@ -77,6 +78,29 @@ body.searchBg{
     no-repeat: center top;
     height: 100%;
     width: 100%;
+}
+
+/*鼠标经过连接颜色改变*/
+a:hover {
+    color: #f54b07 !important;
+}
+
+/*鼠标经过类为m-image的区域，区域平滑变大1.1倍*/
+.m-image:hover {
+    transform: scale(1.1);
+
+}
+.m-image {
+    -webkit-transition: all .5s ease;
+}
+
+/*鼠标经过改变边框颜色*/
+.hover-color:hover {
+    border: 2px solid #00eef5 !important;
+}
+/*原来边框白色*/
+.hover-color {
+    border: 2px solid white !important;
 }
 
 .m-bottomButton {
@@ -221,7 +245,7 @@ body.searchBg{
 
 .m-font-size-text-init-title{
     font-size: 24px;
-    color: #dafcff;
+    color: #ffffff;
     align-content: center;
     font-family:'STXingkai';
 }
@@ -379,6 +403,9 @@ body.searchBg{
 /*-----color-----*/
 .m-black {
     color: #333 !important;
+}
+.m-purple {
+    color: #543b7a;
 }
 .m-teal {
     color: #00bfb7 !important;

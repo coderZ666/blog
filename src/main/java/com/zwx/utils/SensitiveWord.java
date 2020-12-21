@@ -64,51 +64,63 @@ public class SensitiveWord {
     public String filterInfo(String str)  
     {  	sensitiveWordSet = new HashSet<String>();
     	sensitiveWordList= new ArrayList<>();
-        StringBuilder buffer = new StringBuilder(str);  
+        StringBuilder buffer = new StringBuilder(str);
+        //将存放敏感词起止下标的map初始化大小为（敏感词个数+1）*0.75
         HashMap<Integer, Integer> hash = new HashMap<Integer, Integer>(arrayList.size());  
-        String temp;  
-        for(int x = 0; x < arrayList.size();x++)  
-        {  
-            temp = arrayList.get(x);  
-            int findIndexSize = 0;  
-            for(int start = -1;(start=buffer.indexOf(temp,findIndexSize)) > -1;)  
-            {  
-            	//System.out.println("###replace="+temp);
-                findIndexSize = start+temp.length();//从已找到的后面开始找  
-                Integer mapStart = hash.get(start);//起始位置  
-                if(mapStart == null || (mapStart != null && findIndexSize > mapStart))//满足1个，即可更新map  
-                {  
-                    hash.put(start, findIndexSize); 
+        //用于指向一个敏感词
+        String temp;
+        //从敏感词集合中挨个拿到敏感词，查找传入的字符串中是否含有
+        for (String s : arrayList) {
+            //获取当前敏感词
+            temp = s;
+            //初始化开始检索的位置——即从头开始查找是否有敏感词
+            int findIndexSize = 0;
+            for (int start = -1; (start = buffer.indexOf(temp, findIndexSize)) > -1; ) {
+                //System.out.println("###replace="+temp);
+                //进入循环说明找到了敏感词
+                findIndexSize = start + temp.length();//将下一次检索的起点设置为已找到的敏感词的位置
+                Integer mapStart = hash.get(start);//在map中查看是否在当前位置已经有敏感词了
+                //如果没找到，或者找到了涵盖范围没这次广的就记录这个敏感词（比如"你妈死了"和"你妈死"都是敏感词，先找到了"你妈死",后找到了"你妈死了",只记录"你妈死了"）
+                if (mapStart == null || findIndexSize > mapStart) {
+                    //将敏感词的起始下标和结束下标记录进map
+                    hash.put(start, findIndexSize);
                     //System.out.println("###敏感词："+buffer.substring(start, findIndexSize));
-                }  
-            }  
-        }  
+                }
+            }
+        }
+        //将所有的敏感词起点坐标放进集合遍历，找到敏感词记录下来，然后将它替换为设置好的替换符号默认为*
         Collection<Integer> values = hash.keySet();  
         for(Integer startIndex : values)  
-        {  
+        {
+            //根据起点拿到终点坐标
             Integer endIndex = hash.get(startIndex);  
             //获取敏感词，并加入列表，用来统计数量
             String sensitive = buffer.substring(startIndex, endIndex);
             //System.out.println("###敏感词："+sensitive);
             if (!sensitive.contains("*")) {//添加敏感词到集合
+                //去重版
             	sensitiveWordSet.add(sensitive);
+            	//不去重版
             	sensitiveWordList.add(sensitive);
 			}
+            //将敏感词替换为替换符号——默认*
             buffer.replace(startIndex, endIndex, replaceAll.substring(0,endIndex-startIndex));
-        }  
-        hash.clear();  
+        }
+        //清空敏感词索引集合
+        hash.clear();
+        //返回过滤了敏感词的字符串
         return buffer.toString();  
     }  
-    /** 
-     *   初始化敏感词库 
+    /**
+     *   初始化敏感词库
      */  
     public void InitializationWork() {
         replaceAll = new StringBuilder(replceSize);  
         for(int x=0;x < replceSize;x++)  
         {  
             replaceAll.append(replceStr);  
-        }  
-        //加载词库  
+        }
+        //加载词库
         arrayList = new ArrayList<String>();  
         InputStreamReader read = null;  
         BufferedReader bufferedReader = null;  

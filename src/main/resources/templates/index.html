@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
     <link rel="stylesheet" href="../static/lib/editormd/css/editormd.min.css" th:href="@{/lib/editormd/css/editormd.min.css}">
     <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{/css/animate.css}">
 </head>
 
 <body>
@@ -96,7 +97,7 @@
 
 
 <!--最新推荐-->
-<div class="ui m-margin-top-large">
+<div class="animated fadeInUp ui m-margin-top-large">
     <div class="ui container">
         <!--分隔栏-->
         <div class="ui m-opacity m-container-small">
@@ -108,7 +109,7 @@
     <!--最新推荐内容-->
     <div class="ui stackable m-container-mini m-opacity grid">
         <div th:each="recommend : ${recommends}" class="m-margin-tb-tiny four wide column">
-            <a href="#" th:href="@{/blog/{id}(id=${recommend.id})}" class="class_outer" target="_blank">
+            <a href="#" th:href="@{/blog/{id}(id=${recommend.id})}" class="class_outer m-image" target="_blank">
                 <img src="../static/images/bg/bg2.jpg" th:src="@{${recommend.firstPicture}}" alt="" class="ui rounded image">
                 <span class="class_cover" >
                    <h4 class="m-font-size-blog-text m-margin-tb-tiny" th:text="${recommend.title}">大圣，此去欲何?</h4>
@@ -120,7 +121,7 @@
 
 
 <!--中间内容-->
-<div id="goto" class="m-padded-tb-mini m-margin-top-small animated fadeIn">
+<div id="goto" class="m-padded-tb-mini m-margin-top-small animated fadeInUp">
     <div class="ui container">
         <div class="ui stackable grid">
             <!--博客内容-->
@@ -132,14 +133,15 @@
                     </div>
                 </div>
                 <!--博文列表-->
-                <div id="blogList" class="m-padded-tb-large m-opacity">
+                <div id="blogList" class="m-padded-tb-large">
                     <div th:fragment="blogList">
-                        <div th:each="blog : ${pageInfo.list}" class="ui padded segment m-opacity">
+                        <!--遍历出的每一条博客-->
+                        <div th:each="blog : ${pageInfo.list}" class="ui padded segment m-opacity hover-color">
                             <div class="ui large middle aligned mobile reversed stackable grid">
                                 <!--博文信息-->
                                 <div class="eleven wide column ">
-                                    <h3 class="ui header" ><a href="#" th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.title}" target="_blank" class="m-black m-title-font">大圣，此去欲何?</a></h3>
-                                    <p class="m-text m-margin-top-max" th:text="|${blog.description}......|">戴上金箍，没法爱你；放下金箍，没法保护你。我知道上天不会给我第二次机会，曾经我们说好的永远，原来也仅仅只有，十二画，而已。“大圣，此去欲何?”“踏南天，碎凌霄。”“若一去不回……”“便一去不回” 其实很多时候，我们都是有机会的，最后真正放弃的，是我们自己。......</p>
+                                    <h3 class="ui header" ><a href="#" th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.title}" target="_blank" class="m-purple m-title-font">大圣，此去欲何?</a></h3>
+                                    <a th:href="@{/blog/{id}(id=${blog.id})}" class="m-black"><p class="m-text m-margin-top-max" th:text="|${blog.description}......|">戴上金箍，没法爱你；放下金箍，没法保护你。我知道上天不会给我第二次机会，曾经我们说好的永远，原来也仅仅只有，十二画，而已。“大圣，此去欲何?”“踏南天，碎凌霄。”“若一去不回……”“便一去不回” 其实很多时候，我们都是有机会的，最后真正放弃的，是我们自己。......</p></a>
                                     <div class="ui stackable m-margin-top-max grid">
                                         <div class="twelve wide column">
                                             <div class="ui small horizontal link list">
@@ -166,7 +168,7 @@
                                 <!--博文图片-->
                                 <div class="five wide column">
                                     <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">
-                                        <img src="../static/images/bg/bg2.jpg" th:src="@{${blog.firstPicture}}" alt="" class="ui rounded image">
+                                        <img src="../static/images/bg/bg2.jpg" th:src="@{${blog.firstPicture}}" alt="" class="ui rounded image m-image">
                                     </a>
                                 </div>
                             </div>
@@ -274,14 +276,9 @@
 <!--公共JavaScript-->
 <th:block th:replace="_fragments :: script"></th:block>
 
-
 <!--功能script（各页面不同的部分）-->
-<!--雪花效果-->
-<script th:src="@{/js/snowy.js}" src="http://www.lmlblog.com/winter/templets/xq/js/snowy.js"></script>
-<script th:src="@{/js/Snow.js}" src="http://www.lmlblog.com/blog/12/js/Snow.js"></script>
-<style type="text/css">
-    .snow-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100001;}
-</style>
+<!-- 雪花特效 -->
+<script type="text/javascript" src="/js/Snow.js"></script>
 <div class="snow-container"></div>
 <script th:inline="javascript">
     // 显示公众号

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
     <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
     <link rel="stylesheet" href="../static/lib/music/css/zplayer.min.css" th:href="@{/lib/music/css/zplayer.min.css}" />
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{/css/animate.css}">
 
 </head>
 <body class="musicBg">
@@ -44,7 +45,7 @@
 </nav>
 
 <!--顶部图片-->
-<div class="m-bg-type_outer" style="width: 100%;height: 500px">
+<div class="m-bg-type_outer animated fadeInDown" style="width: 100%;height: 500px">
     <!--<img src="../static/images/music.jpg" th:src="@{/images/music.jpg}" alt="" class="ui m-bg image" style="width: 100%;height: 100%">-->
     <div class="m-bg-class_cover">
         <div class="ui container" style="position: relative ;top: 140px;">
@@ -55,7 +56,7 @@
 </div>
 
 <!--播放器占位-->
-<div class="ui m-margin-2 m-opacity" align="center" style="max-width: 100%">
+<div class="ui m-margin-2 m-opacity animated fadeInUp" align="center" style="max-width: 100%">
     <div class="ui container box-shadow-max">
         <div id="player2"></div>
     </div>
@@ -67,16 +68,18 @@
 <br>
 <br>
 
+<!--jquery需要第一个引入，否则报错方法不存在-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 <script type="text/javascript" src="../static/lib/music/js/zplayer.min.js" th:src="@{/lib/music/js/zplayer.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 
-<!--雪花效果-->
-<script th:src="@{/js/snowy.js}" src="http://www.lmlblog.com/winter/templets/xq/js/snowy.js"></script>
-<script th:src="@{/js/Snow.js}" src="http://www.lmlblog.com/blog/12/js/Snow.js"></script>
-<style type="text/css">
-    .snow-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100001;}
-</style>
+<!--背景动态线条-->
+<script type="text/javascript"
+        color="255,129,170" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
+
+<!-- 雪花特效 -->
+<script type="text/javascript" src="/js/Snow.js"></script>
 <div class="snow-container"></div>
 
 <script>
@@ -797,7 +800,7 @@
             pic: "http://p1.music.126.net/DSTg1dR7yKsyGq4IK3NL8A==/109951163046050093.jpg?param=300x300",
             lrc: "[00:00] 作曲 : 少年佩\n[00:01] 作词 : 墨鱼丝\n[00:11]制作人：黎偌天\n[00:12]编曲：黎偌天\n[00:13]监制：李纤橙\n[00:14]\n[00:18]你的晚安 是下意识的恻隐\n[00:24]我留至夜深 治疗失眠梦呓\n[00:30]那封手写信 留在行李箱底\n[00:36]来不及 赋予它旅途的意义\n[00:43]若一切 都已云烟成雨\n[00:49]我能否 变成淤泥\n[00:52]再一次 沾染你\n[00:55]若生命 如过场电影\n[01:01]Oh让我再一次 甜梦里惊醒\n[01:13]我多想再见你\n[01:15]哪怕匆匆一眼就别离\n[01:19]路灯下昏黄的剪影\n[01:22]越走越漫长的林径\n[01:25]我多想再见你\n[01:28]至少玩笑话还能说起\n[01:32]街巷初次落叶的秋分\n[01:35]渐行渐远去的我们\n[01:53]若一切 都已云烟成雨\n[01:59]我能否 变成淤泥\n[02:01]再一次 沾染你\n[02:05]若生命 如过场电影\n[02:10]Oh让我再一次 甜梦里惊醒\n[02:19]我多想再见你\n[02:21]哪怕匆匆一眼就别离\n[02:26]路灯下昏黄的剪影\n[02:28]越走越漫长的林径\n[02:32]我多想再见你\n[02:34]至少玩笑话还能说起\n[02:38]街巷初次落叶的秋分\n[02:41]渐行渐远去的我们\n[02:49]站台 汽笛响起\n[02:52]想念是你的声音\n[02:55]我们提着过去 走入人群\n[03:02]寻找着一个位置 安放自己\n[03:13]我多想再见你\n[03:15]哪怕匆匆一眼就别离\n[03:19]路灯下昏黄的剪影\n[03:22]越走越漫长的林径\n[03:25]我多想再见你\n[03:28]至少玩笑话还能说起\n[03:31]街巷初次落叶的秋分\n[03:35]渐行渐远去的我们\n[03:41]\n[03:43]主唱：红鼻子小黑\n[03:44]制作人：黎偌天\n[03:46]监制：李纤橙\n"
         }]
-    })
+    });
     zp2.init();
 
     //手机端隐藏菜单按钮的显示

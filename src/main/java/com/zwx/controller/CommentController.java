@@ -30,7 +30,7 @@ public class CommentController {
     @Resource
     private BlogService blogService;
 
-    private Integer size=4;
+    private Integer size=10;
 
     //刷新评论的请求
     @GetMapping("/comments/{blogId}")

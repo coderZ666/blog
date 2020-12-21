@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
@@ -48,4 +49,16 @@ public class TagShowController {
         return "tag";
     }
 
+    //处理最新文章列表上下一页的ajax请求
+    @PostMapping("/changeTagPage")
+    public String changeBlogPage(Integer page,Integer id,Model model){
+        System.out.println(id+"\t"+page);
+        //根据分类id查询分类下所有已发布的博客，按更新时间排序，做分页处理，传递给页面
+        List<Blog> blogList = blogService.listBlogByTagId(page,size,id);
+        PageInfo pageInfo = new PageInfo(blogList);
+        model.addAttribute("pageInfo",pageInfo);
+        //再把id传回页面，表示被选中
+        model.addAttribute("activeTagId",id);
+        return "tag :: blogList";
+    }
 }

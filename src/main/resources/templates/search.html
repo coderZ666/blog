@@ -42,7 +42,7 @@
 
 
 <!--顶部图片-->
-<div class="m-bg-type_outer" style="width: 100%;height: 500px">
+<div class="m-bg-type_outer animated fadeInDown" style="width: 100%;height: 500px">
   <!--<img src="../static/images/typebg.jpg" th:src="@{/images/typebg.jpg}" alt="" class="ui m-bg image" style="width: 100%;height: 100%">-->
   <div class="m-bg-class_cover">
     <div class="ui container" style="position: relative ;top: 170px;">
@@ -53,7 +53,7 @@
 </div>
 
 <!--中间内容-->
-<div  class="m-margin-">
+<div  class="m-margin- animated fadeInUp">
   <div class="ui container">
       <!--header-->
       <div class="ui top attached segment">
@@ -67,12 +67,12 @@
         </div>
       </div>
 
-      <div th:if="${#arrays.length(pageInfo.list)}>0" class="ui top attached segment">
-        <div th:each="blog : ${pageInfo.list}" class="ui padded vertical segment m-padded-tb-large">
+      <div th:if="${#arrays.length(pageInfo.list)}>0" class="ui vertical segment">
+        <div th:each="blog : ${pageInfo.list}" class="ui padded segment m-padded-tb-large m-opacity hover-color">
           <div class="ui middle aligned mobile reversed stackable grid" >
             <div class="eleven wide column">
-              <h3 class="ui header" ><a href="#" th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.title}">大圣，此去欲何?</a></h3>
-              <p class="m-text m-margin-top-max" th:text="|${blog.description}......|">戴上金箍，没法爱你；放下金箍，没法保护你。我知道上天不会给我第二次机会，曾经我们说好的永远，原来也仅仅只有，十二画，而已。“大圣，此去欲何?”“踏南天，碎凌霄。”“若一去不回……”“便一去不回” 其实很多时候，我们都是有机会的，最后真正放弃的，是我们自己。......</p>
+              <h3 class="ui header" ><a href="#" th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.title}" class="m-purple m-title-font">大圣，此去欲何?</a></h3>
+              <a th:href="@{/blog/{id}(id=${blog.id})}" class="m-black"><p class="m-text m-margin-top-max" th:text="|${blog.description}......|">戴上金箍，没法爱你；放下金箍，没法保护你。我知道上天不会给我第二次机会，曾经我们说好的永远，原来也仅仅只有，十二画，而已。“大圣，此去欲何?”“踏南天，碎凌霄。”“若一去不回……”“便一去不回” 其实很多时候，我们都是有机会的，最后真正放弃的，是我们自己。......</p></a>
               <div class="ui grid m-margin-top-max">
                 <div class="eleven wide column">
                   <div class="ui mini horizontal link list">
@@ -100,7 +100,7 @@
             <!--博文首图-->
             <div class="five wide column">
               <a href="#" target="_blank" th:href="@{/blog/{id}(id=${blog.id})}">
-                <img src="../static/images/bg/bg2.jpg" th:src="@{${blog.firstPicture}}" alt="" class="ui rounded image">
+                <img src="../static/images/bg/bg2.jpg" th:src="@{${blog.firstPicture}}" alt="" class="ui rounded image m-image">
               </a>
             </div>
 

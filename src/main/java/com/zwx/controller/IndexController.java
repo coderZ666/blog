@@ -29,7 +29,7 @@ public class IndexController {
     private CommentService commentService;
 
     //初始化赋值每页展示博客的条数为10
-    private Integer size=4;
+    private Integer size=10;
 
     //访问根路径就可以直接来到首页
     @GetMapping("/")

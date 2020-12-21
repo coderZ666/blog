@@ -84,7 +84,7 @@
 
                     <!--友人帐显示区域-->
                     <div th:each="friendLink : ${friendLinks}" class="m-margin-tb-tiny four wide column">
-                        <a href="#" th:href="@{${friendLink.blogAddress}}" class="class_outer" target="_blank">
+                        <a href="#" th:href="@{${friendLink.blogAddress}}" class="class_outer m-image" target="_blank">
                             <div align="center">
                                 <div class="friends-link">
                                     <img src="../static/images/me.jpg" th:src="@{${friendLink.pictureAddress}}" alt="" class="friends-link-image">
